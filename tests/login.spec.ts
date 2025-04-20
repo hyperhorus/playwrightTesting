@@ -1,0 +1,61 @@
+// tests/login.spec.ts
+import { test, expect } from '@playwright/test';
+import { SauceDemoPage } from '../tests/pageobjects/SauceDemoPage';
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config();
+
+test('TC01 - Login exitoso con credenciales válidas', async ({ page }) => {
+  const loginPage = new SauceDemoPage(page);
+  await loginPage.login(process.env.USER!, process.env.PASSWORD!);
+  await expect(page).toHaveURL(/inventory/);
+});
+
+test('TC02 - Login con contraseña incorrecta', async ({ page }) => {
+  const loginPage = new SauceDemoPage(page);
+  await loginPage.login(process.env.USER!, 'wrong_password');
+  await expect(loginPage.loginError).toBeVisible();
+  await expect(loginPage.loginError).toHaveText(/do not match/);
+});
+
+test('TC03 - Login con campos vacíos', async ({ page }) => {
+  const loginPage = new SauceDemoPage(page);
+  await loginPage.login('', '');
+  await expect(loginPage.loginError).toBeVisible();
+  await expect(loginPage.loginError).toHaveText(/Username is required/);
+});
+
+test('TC04 - Logout exitoso desde el menú', async ({ page }) => {
+  const loginPage = new SauceDemoPage(page);
+  await loginPage.login(process.env.USER!, process.env.PASSWORD!);
+  await loginPage.menuButton.click();
+  await loginPage.logoutLink.click();
+  await expect(page).toHaveURL(/saucedemo\.com/);
+});
+
+test('TC05 - Elementos visibles tras login', async ({ page }) => {
+  const loginPage = new SauceDemoPage(page);
+  await loginPage.login(process.env.USER!, process.env.PASSWORD!);
+  await expect(loginPage.backpackTitle).toBeVisible();
+  await expect(loginPage.addToCartBackpack).toBeVisible();
+  await expect(loginPage.cartIcon).toBeVisible();
+});
+
+test('TC01a - screenshot Login exitoso con credenciales válidas', async ({ page }, testInfo) => {
+  await page.goto('https://www.saucedemo.com/')
+  await page.getByRole('textbox', {name: 'Username'}).fill('standard_user')
+  //await page.screenshot({path: 'screenshots/loginUsername.png' })
+  await page.getByRole('textbox', {name: 'Password'}).fill('secret_sauce')
+  await page.screenshot({path: 'screenshots/login.png' })
+  await page.getByRole('button', {name: 'Login'}).click()
+  //await page.locator('xpath://algo').click()
+
+  await testInfo.attach('login', {
+    body: await page.screenshot(),
+    contentType: 'image/png'
+  })
+
+  //await page.screenshot({path: 'screenshots/pagetarget.png', fullPage:true })
+
+
+});
