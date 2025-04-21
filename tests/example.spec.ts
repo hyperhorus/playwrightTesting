@@ -26,7 +26,7 @@ test('test 3', async ({ page }) => {
   //await page.pause()
   const titles = await page.locator('//ol[@class=\'ui-search-layout ui-search-layout--stack\']//li//h3').allInnerTexts()
 
- console.log("Totales de elementos: ", titles.length)
+ console.log("Total de elementos: ", titles.length)
  for(let titulo of titles){
     console.log('Valor del titulo: ', titulo)
 
