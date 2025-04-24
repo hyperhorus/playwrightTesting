@@ -1,6 +1,6 @@
 // tests/login.spec.ts
 import { test, expect } from '@playwright/test';
-import { SauceDemoPage } from '../tests/pageobjects/SauceDemoPage';
+import { SauceDemoPage } from './pageobjects/SauceDemoPage';
 import dotenv from 'dotenv';
 import path from 'path';
 dotenv.config();
