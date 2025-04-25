@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('test unica prueba', async ({ page }) => {
+test('test unica pruebas', async ({ page }) => {
   await page.goto('https://www.mercadolibre.com.mx')
   await page.locator('input[id=\'cb1-edit\']').fill('iphone')
   await page.keyboard.press('Enter')
