@@ -1,5 +1,9 @@
-FROM jenkins/jenkins:lts-jdk17
+FROM mcr.microsoft.com/playwright:v1.43.1-jammy
 
-USER root
-RUN curl -ssl https://get.docker.com | sh 
-USER jenkins
+WORKDIR /app
+COPY . .
+
+RUN npm install
+RUN npx playwright install --with-deps
+
+CMD ["npx", "playwright", "test"]

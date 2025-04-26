@@ -1,25 +1,21 @@
 pipeline {
-   agent { docker { image 'mcr.microsoft.com/playwright:v1.50.0-noble' } }
-   stages {
-      stage('e2e-tests') {
-         steps {
-            sh 'npm ci'
-            sh 'npx playwright test'
-         }
+  agent {
+    docker {
+      image 'mcr.microsoft.com/playwright:v1.43.1-jammy'
+      args '-v $WORKSPACE:/app -w /app'
+    }
+  }
+  stages {
+    stage('Install dependencies') {
+      steps {
+        sh 'npm install'
+        sh 'npx playwright install --with-deps'
       }
-   }
-   
-   // post{
-   //     always{
-   //          publishHTML([
-   //                          reportName : 'Playwright Report',
-   //                          reportDir: 'playwright-report',
-   //                          reportFiles: 'index.html',
-   //                          keepAll:     true,
-   //                          alwaysLinkToLastBuild: true,
-   //                          allowMissing: false
-   //                      ])
-   //     }
-   // }
-   
+    }
+    stage('Run tests') {
+      steps {
+        sh 'npx playwright test'
+      }
+    }
+  }
 }
